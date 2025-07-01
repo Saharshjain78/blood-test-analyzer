@@ -1,7 +1,7 @@
 ## Importing libraries and files
 from crewai import Task
 
-from agents import doctor, verifier
+from agents import doctor
 from tools import BloodTestReportTool
 
 # Create tool instance

@@ -4,20 +4,24 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from crewai import Agent
-from langchain_google_genai import ChatGoogleGenerativeAI
 from tools import BloodTestReportTool
 
 # Create tool instances
 pdf_tool = BloodTestReportTool()
 
 ### Loading LLM
-llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash", 
-    verbose=True, 
-    temperature=0.3,
-    max_tokens=1024,
-    max_retries=1
-)
+# Set environment variable for LiteLLM
+google_api_key = os.getenv("GOOGLE_API_KEY")
+if not google_api_key:
+    raise ValueError("GOOGLE_API_KEY not found in environment variables")
+
+# Set multiple environment variables that LiteLLM might look for
+os.environ["GOOGLE_API_KEY"] = google_api_key
+os.environ["GEMINI_API_KEY"] = google_api_key
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = google_api_key
+
+# Use string format that works with CrewAI 0.134.0 and LiteLLM
+llm = "gemini/gemini-1.5-flash"
 
 # Creating an Experienced Doctor agent
 doctor=Agent(
